@@ -1,13 +1,31 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { CursoService } from '../curso.service';
 
 @Component({
   selector: 'app-lista',
-  standalone: true,
-  imports: [CommonModule],
   templateUrl: './lista.component.html',
-  styleUrl: './lista.component.css'
+  styleUrls: ['./lista.component.css'],
 })
-export class ListaComponent {
+export class ListaComponent implements OnInit {
+  cursos: any[] = [];
 
+  constructor(private cursoService: CursoService) {}
+
+  ngOnInit(): void {
+    this.carregarCursos();
+  }
+
+  carregarCursos() {
+    this.cursoService.getCursos().subscribe((data: any) => {
+      this.cursos = data;
+    });
+  }
+
+  excluirCurso(id: number) {
+    if (confirm('Deseja realmente excluir o curso?')) {
+      this.cursoService.excluirCurso(id).subscribe(() => {
+        this.carregarCursos();
+      });
+    }
+  }
 }
